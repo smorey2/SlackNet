@@ -32,11 +32,12 @@ namespace SlackNet
 
         private Dictionary<string, Type> CreateLookup(Type baseType)
         {
+            var baseTypeInfo = baseType.GetTypeInfo();
             var lookup = new Dictionary<string, Type>();
             _assemblies
                 .SelectMany(a => a.ExportedTypes)
                 .Select(t => t.GetTypeInfo())
-                .Where(t => baseType.GetTypeInfo().IsAssignableFrom(t))
+                .Where(t => baseTypeInfo.IsAssignableFrom(t))
                 .Select(t => new { type = t.AsType(), slackType = t.SlackType() })
                 .ToList()
                 .ForEach(t => lookup[t.slackType] = t.type);
